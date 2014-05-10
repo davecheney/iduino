@@ -20,10 +20,10 @@ void loop()  {
       R2 = (unsigned char*)R0;
       break;
     case '+':
-      R1++;
+      *R1++;
       break;
     case '-':
-      R1--;
+      *R1--;
       break;
     case '0':
     case '1':
@@ -68,6 +68,9 @@ void loop()  {
       R0 <<=4;
       R0 |= 0xf;
       break;
+    case 'n':
+      R1++;
+      break;
     case '[':
       R0 = 0; // optional
       break;
@@ -103,6 +106,7 @@ void loop()  {
     Serial.write(b);
   }
 }
+
 
 
 

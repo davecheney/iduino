@@ -7,7 +7,7 @@ Using a simple interpreted command set the IO register set of an Arduino can be 
 
 # Usage
 
-Load the iduino.ido sketch onto your Arduino (tested with Arduino UNO, but other Atmel models should work similarly) and connect to the serial console at 115,200 baud. Each command is a single ASCII character (see below). iduino will echo each character as it is entered if it is valid. If the command is not valid, `?` will be echoed. Certain characters such as '\n' are ignored, but echoed.
+Load the iduino.ino sketch onto your Arduino (tested with Arduino UNO, but other Atmel models should work similarly) and connect to the serial console at 115,200 baud. Each command is a single ASCII character (see below). iduino will echo each character as it is entered if it is valid. If the command is not valid, `?` will be echoed. Certain characters such as '\n' are ignored, but echoed.
 
 # Command set
 
@@ -33,7 +33,7 @@ Drawing inspiration from the Bitscope VM API, iduino is programmed via two virtu
 
 # Examples
 
-This is a very imcomplete getting started guide.
+This is a very incomplete getting started guide.
 
 ## Loading data
 
