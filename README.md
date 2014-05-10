@@ -1,4 +1,4 @@
-# iduino - the interactive Arduino
+# iduino - interactive Arduino
 
 
 `iduino` is an experimental mashup of the [firmata](http://firmata.org/wiki/Main_Page) serial programmable Arduino and the [Bitscope Virtual Machine](http://bitscope.com/design/manual/?p=2) instruction set.
@@ -76,3 +76,15 @@ Many Arduino control registers share several duties so care must always be taken
 	[24]@[01]|[25]@[01]|
 
 Because we're not simply overwriting values, we loose some of the brevity of the previous example. The main difference between the first example and this one is the replacement of `s` with `|`. In effect the value in R0 is OR'd with the contents of (R1), this preserves any bits we did not intend to alter. 
+
+## Toggling bits
+
+The `|` command as a counterpart, `~` which ANDs the bitwise compliment of R0 with R1, effectvely unsetting any bit in R0 that was previously set. This can be used to toggle a bit.
+
+	[24]@[01]|[25]@[01]|~|~|~|~|~|~|~|~|~
+
+The `|` command sets the bits of R0 in (R1), `~` unsets them, and so forth.
+
+	[24]@[03]s[25]@[03]s[01]|~|~||~|~|~|~|~|~|~|~
+
+Sets both bits 0 and 1, Pins 8 and 9 to on, then toggles bit 0, Pin 0.
