@@ -14,13 +14,21 @@ Load the iduino.ido sketch onto your Arduino (tested with Arduino UNO, but other
 Drawing inspiration from the Bitscope VM API, iduino is programmed via two virtual registers, R0 and R1. R0 is known as the scratch register, R1 is the address register.
 
 `[` - clears the contents of R0.
+
 `0..9` `a..f` - left shifts the binary value of the character entered into R0.
+
 `]` - ignored, for compatability with the Bitscope VM API.
+
 `@` - copies the value in R0 into R1.
+
 `s` - stores the value in R0 into the _address_ of R1, that is (R1).
+
 `z` - stores the value in R0 into the _address_ of R1 and increments R1.
+
 `p` - prints the contents of the address stored in R1.
+
 `|` - ORs the value in (R1) with R0, this sets the bits of R0 in (R1).
+
 `~` - ANDs the value in (R1) with the compliment of R0, this clears the bits of R0 in (R1).
 
 # Examples
