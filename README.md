@@ -7,7 +7,7 @@ Using a simple interpreted command set the IO register set of an Arduino can be 
 
 # Usage
 
-Load the iduino.ino sketch onto your Arduino (tested with Arduino UNO, but other Atmel models should work similarly) and connect to the serial console at 115,200 baud. Each command is a single ASCII character (see below). iduino will echo each character as it is entered if it is valid. If the command is not valid, `?` will be echoed. Certain characters such as '\n' are ignored, but echoed.
+Load the iduino.ino sketch onto your Arduino (tested with Arduino UNO, but other Atmel models should work similarly) and connect to the serial console at 115,200 baud. Each command is a single ASCII character (see below). iduino will echo each character as it is entered if it is valid. If the command is not valid, `?` will be echoed. Certain characters such as '\n' have no effect, but echoed for convenience.
 
 # Command set
 
@@ -45,7 +45,7 @@ The `[` clears R0, `4` shifts 0x4 into R0 from the right hand side, leaving 0x04
 
 ## Setting a register
 
-To do anything useful with iduino we need to set the configuration of various Arduino registers. Do this this you will need to read the documentation for your particular Atmel chip closely (for example the [ATmega328p](http://www.atmel.com/Images/Atmel-8271-8-bit-AVR-Microcontroller-ATmega48A-48PA-88A-88PA-168A-168PA-328-328P_datasheet.pdf) found on the Arduino UNO). The Atmel chip stores the control registers for the various chip functions just beyond the architectural registers starting at address 0x20.
+To do anything useful with iduino we need to set the configuration of various Arduino registers. To do this you will need to read the documentation for your particular Atmel chip closely (for example the [ATmega328p](http://www.atmel.com/Images/Atmel-8271-8-bit-AVR-Microcontroller-ATmega48A-48PA-88A-88PA-168A-168PA-328-328P_datasheet.pdf) found on the Arduino UNO). The Atmel chip stores the control registers for the various chip functions just beyond the architectural registers starting at address 0x20.
 
 For example, the configuration and state of the digital pins 8-13, also known as PORTB, are stored in addresses 0x24 and 0x25 respectively. So, to set pin 8 to OUTPUT and turn it on, we can issue the following commands.
 
@@ -54,28 +54,28 @@ For example, the configuration and state of the digital pins 8-13, also known as
 Let's break this down a little. 
 
 * First we store the address of the DDRB, the port B direction register, 0x24, in R1 -- `[24]@`
-* Next we store the value, 0x01 for PORTB, bit 0, which is pin 8 on the Arduino Uno, into the address pointed to by R1, this sets Pin 8 to OUTPUT  -- `[01]s`
+* Next we store the value, 0x01 for PORTB, bit 0, which is Pin 8 on the Arduino Uno, into the address pointed to by R1, this sets Pin 8 to OUTPUT  -- `[01]s`
 * Now that we have set Pin 8 to OUTPUT, load the address 0x25 into R1 -- `[25]@`
 * Then store 0x01 into (R1) turning on the output. -- `[01]s`
 
 ## Setting a register (continued)
 
-Taking the example able a little further we can write the above more compactly.
+Taking the example a little further we can write the above more compactly.
 
 	[24]@[01]zs
 
 The main difference is the use of the `z` command in place of the first `s`. `z` operates similarly to `s`, but once the value has been stored it increments the value of R1. This leads to two improvements. 
 
 * After the first `z`, the value of R0 and R1 respectively are 0x01 and 0x25 (R1 was incremented by `z`)
-* This means we can issue a `s` to store 0x01 into address 0x25 without setting up R0 and R1 again.
+* This means we can issue a `s` to store 0x01 into address 0x25 without setting up R0 and R1 again. Alternatively `z` could be entered again, which would leave R1 with the value 0x26.
 
 ## Altering a register.
 
-Many Arduino control registers share several duties so care must always be taken when storing, overwriting, values stored in them. Say for example we wanted to change the value of Pin 8, but leave Pin 9 untouched. To do this, we can use the `|` operator.
+Many Arduino control registers share several duties so care must always be taken when storing, or overwriting, values stored in them. Say for example we wanted to change the value of Pin 8, but leave Pin 9 untouched. To do this, we can use the `|` operator.
 
 	[24]@[01]|[25]@[01]|
 
-Because we're not simply overwriting values, we loose some of the brevity of the previous example. The main difference between the first example and this one is the replacement of `s` with `|`. In effect the value in R0 is OR'd with the contents of (R1), this preserves any bits we did not intend to alter. 
+Because we're not simply overwriting values, we loose some of the brevity of the previous example. The main difference between the original example and this one is the replacement of `s` with `|`. In effect the value in R0 is OR'd with the contents of (R1), this preserves any bits we did not intend to alter. 
 
 ## Toggling bits
 
@@ -85,6 +85,6 @@ The `|` command as a counterpart, `~` which ANDs the bitwise compliment of R0 wi
 
 The `|` command sets the bits of R0 in (R1), `~` unsets them, and so forth.
 
-	[24]@[03]s[25]@[03]s[01]|~|~||~|~|~|~|~|~|~|~
+	[24]@[03]s[25]@[03]s[01]|~|~|~|~|~|~|~|~|~|~
 
-Sets both bits 0 and 1, Pins 8 and 9 to on, then toggles bit 0, Pin 0.
+Sets both bits 0 and 1, Pins 8 and 9 to on, then toggles bit 0, Pin 8.
