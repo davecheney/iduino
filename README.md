@@ -31,6 +31,10 @@ Drawing inspiration from the Bitscope VM API, iduino is programmed via two virtu
 
 `~` - ANDs the value in (R1) with the compliment of R0, this clears the bits of R0 in (R1).
 
+# Memory map
+
+The Arduino has a unified memory map. Each architectural, IO, and extended IO register has a predetermined location in memory (although those registers may not be physically present in SRAM). Each Arduino register may be referenced by R1 by loading its address via R0, however iduino R0 and R1 are not accessible via this method, addresses 0x00 and 0x11 refer to the Ardunio architectural registers r0 and r1. This limitation may be lifted in the future.
+
 # Examples
 
 This is a very incomplete getting started guide.
