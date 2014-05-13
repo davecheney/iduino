@@ -10,6 +10,15 @@ void setup()  {
   Serial.begin(115200);
 } 
 
+void printchar(unsigned char c) {
+  if ((c >= 0) && (c<= 9)) {
+    Serial.write(c + 0x30);
+  } 
+  else if ((c >= 0x0a) && (c <=0x0f)) {
+    Serial.write(c + 0x61 - 0x0a);
+  }
+}   
+
 void loop()  {
   if (Serial.available()) {
     signed int c = Serial.read();
@@ -59,10 +68,13 @@ void loop()  {
       R0 = *R2;
       break;
     case 'p':
-      Serial.write(b); 
-      Serial.println();
-      Serial.print((*R1) >> 4, HEX);
-      Serial.println((*R1) &0xf, HEX);
+      Serial.write(b);
+      Serial.write('\r');
+      Serial.write('\n');
+      printchar((*R1) >> 4);
+      printchar((*R1) &0xf);
+      Serial.write('\r');
+      Serial.write('\n');
       return; // don't print input character
     case 's':
       *R1 = R0;
@@ -77,6 +89,9 @@ void loop()  {
     case '~': // BIC the value in *R1 with R0, unsets the bits in R0.
       *R1 &= ~R0;
       break; 
+    case '.':  // delay 100ms
+      delay(100);
+      break;
     case '!':  // reset
       cli();                  // Clear interrupts
       wdt_enable(WDTO_15MS);      // Set the Watchdog to 15ms
@@ -92,6 +107,7 @@ void loop()  {
     Serial.write(b);
   }
 }
+
 
 
 
